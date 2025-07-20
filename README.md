@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+from tensorflow import keras
 
 def evaluacion_caracteristicas(mensaje):
   signos_de_exclamacion = mensaje.count("!")
@@ -37,34 +38,34 @@ def generar_datos(n_spam=5000, n_no_spam=5000, seed=42):
     datos = []
     etiquetas = []
 
-    # Generar NO SPAM
+    
     for _ in range(n_no_spam):
-        a = np.random.randint(4, 5000)  # Palabras
-        b = np.random.randint(0, a // 4 + 1)  # Exclamaciones pequeñas
+        a = np.random.randint(4, 5000)  
+        b = np.random.randint(0, a // 4 + 1)  
         datos.append([a, b])
         etiquetas.append(0)
 
-    # Generar SPAM
+    
     for _ in range(n_spam):
         a = np.random.randint(4, 5000)
-        b = np.random.randint(a // 4 + 1, a + 5)  # Exclamaciones grandes
+        b = np.random.randint(a // 4 + 1, a + 5)  
         datos.append([a, b])
         etiquetas.append(1)
 
     return np.array(datos, dtype=np.float32), np.array(etiquetas)
 
-# Usar la función
+
 X, y = generar_datos()
 
 normalizer = tf.keras.layers.Normalization(axis=-1)
 normalizer.adapt(X)
 
-# Verificar
+
 print("Primeras 5 entradas:\n", X[:5])
 print("Primeras 5 etiquetas:\n", y[:5])
 
 normalizer
-capa_oculta= tf.keras.layers.Dense(units=3, activation='relu')
+capa_oculta= tf.keras.layers.Dense(units=3, kernel_regularizer=tf.keras.regularizers.l2(0.001), activation='relu')
 capay = tf.keras.layers.Dense(units=1, activation = 'sigmoid')
 
 
@@ -93,7 +94,8 @@ plt.show()
 mensaje = input("Ingrese un mensaje: ")
 
 resultado_prediccion=model.predict(np.array([evaluacion_caracteristicas(mensaje)]))
-if resultado_prediccion> 0.7:
+
+if resultado_prediccion > 0.4:
   print('El correo es spam')
 else:
   print('El correo no es spam')
