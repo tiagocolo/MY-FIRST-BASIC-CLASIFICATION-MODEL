@@ -8,7 +8,8 @@ def evaluacion_caracteristicas(mensaje):
   signos_de_exclamacion = mensaje.count("!")
   mensaje_limpio = mensaje.replace(",","").replace("!","").replace(".","")
   cantidad_palabras = len(mensaje_limpio.split())
-  return np.array([cantidad_palabras, signos_de_exclamacion])
+  
+  return np.array([cantidad_palabras , signos_de_exclamacion ])
 
 
 
@@ -27,10 +28,9 @@ y_no_spam_val = [0] * len(X_no_spam_val)
 x_val = np.array(X_spam_val + X_no_spam_val, dtype=np.float32)
 y_val = np.array(y_spam_val + y_no_spam_val, dtype=np.float32)
 
-normalizer_val = tf.keras.layers.Normalization(axis=-1)
-normalizer_val.adapt(x_val)
+ 
 
-x_normalized_val = normalizer_val(x_val)
+ 
 
 
 def generar_datos(n_spam=5000, n_no_spam=5000, seed=42):
@@ -38,17 +38,17 @@ def generar_datos(n_spam=5000, n_no_spam=5000, seed=42):
     datos = []
     etiquetas = []
 
-    
+
     for _ in range(n_no_spam):
-        a = np.random.randint(4, 5000)  
-        b = np.random.randint(0, a // 4 + 1)  
+        a = np.random.randint(4, 5000)
+        b = np.random.randint(0, a // 4 + 1)
         datos.append([a, b])
         etiquetas.append(0)
 
-    
+
     for _ in range(n_spam):
         a = np.random.randint(4, 5000)
-        b = np.random.randint(a // 4 + 1, a + 5)  
+        b = np.random.randint(a // 4 + 1, a + 5)
         datos.append([a, b])
         etiquetas.append(1)
 
@@ -82,7 +82,7 @@ model.compile(
     metrics = ['accuracy'])
 
 
-history = model.fit(X, y, epochs=1000, batch_size=16, verbose=False, validation_data=(x_normalized_val, y_val))
+history = model.fit(X, y, epochs=1000, batch_size=16, verbose=False, validation_data=(x_val, y_val))
 
 print("Modelo entrenado!")
 
@@ -91,11 +91,8 @@ plt.xlabel("Épocas")
 plt.ylabel("Pérdida")
 plt.show()
 
-mensaje = input("Ingrese un mensaje: ")
+mensaje = ("!!Holaaaa, como te va !!!!")
 
 resultado_prediccion=model.predict(np.array([evaluacion_caracteristicas(mensaje)]))
 
-if resultado_prediccion > 0.4:
-  print('El correo es spam')
-else:
-  print('El correo no es spam')
+print(f"La probabilidad de que su correo sea spam es: {resultado_prediccion}")
