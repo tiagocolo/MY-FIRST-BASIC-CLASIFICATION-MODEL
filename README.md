@@ -65,7 +65,7 @@ print("Primeras 5 entradas:\n", X[:5])
 print("Primeras 5 etiquetas:\n", y[:5])
 
 normalizer
-capa_oculta= tf.keras.layers.Dense(units=3, kernel_regularizer=tf.keras.regularizers.l2(0.001), activation='sigmoid')
+capa_oculta= tf.keras.layers.Dense(units=3, kernel_regularizer=tf.keras.regularizers.l2(0.001), activation='ReLU')
 capay = tf.keras.layers.Dense(units=1, activation = 'sigmoid')
 
 
